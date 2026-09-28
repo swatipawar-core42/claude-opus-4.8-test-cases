@@ -1,0 +1,225 @@
+TC_ID,Title,Preconditions,Steps,Expected_Result,Priority,Type,Tags
+OASCOM-TC-DSKV4PRO-AZ-001,Successful Azure Text Generation - deepseek-v4-pro (stream=False),Valid Azure OpenAI API credentials and deepseek-v4-pro model availability,"1. Send POST /text-generation with deployment_id=deepseek-v4-pro, stream=False, messages=[{'role':'user','content':'hi'}], max_completion_tokens from constants.
+2. Verify response status code.
+3. Verify response model field.
+4. Verify response choices field exists.
+5. Verify usage parameters in response.
+6. Verify response headers are not null or empty.","HTTP 200 OK
+- Response model field contains 'accounts/fireworks/models/deepseek-v4-pro' or 'deepseek-v4-pro'
+- Response contains 'choices' field with at least one choice
+- Response contains 'usage' field with prompt_tokens, completion_tokens, total_tokens
+- Response headers are valid and not empty",High,Smoke|Regression,compass_azure_openai|compass_deepseek_v4_pro|compass_text_generation|api_all|staging
+OASCOM-TC-DSKV4PRO-AZ-002,Successful Azure Text Generation - deepseek-v4-pro (stream=True),Valid Azure OpenAI API credentials and deepseek-v4-pro model availability,"1. Send POST /text-generation with deployment_id=deepseek-v4-pro, stream=True, messages=[{'role':'user','content':'hi'}].
+2. Verify response status code.
+3. Verify response headers are not null or empty.","HTTP 200 OK
+- Response headers are valid and not empty
+- Streaming response received successfully",High,Regression,compass_azure_openai|compass_deepseek_v4_pro|compass_text_generation|api_all
+OASCOM-TC-DSKV4PRO-AZ-003,Role Validation - System Role Support,Valid Azure OpenAI API credentials,"1. Send POST /text-generation with deployment_id=deepseek-v4-pro, stream=False, messages=[{'role':'system','content':'I am a student'}].
+2. Verify response status code.
+3. Verify response model field.
+4. Verify response headers.","HTTP 200 OK
+- Response model field contains valid model identifier
+- Response headers are valid and not empty",High,Regression,compass_azure_openai|compass_deepseek_v4_pro|compass_text_generation|api_all
+OASCOM-TC-DSKV4PRO-AZ-004,Role Validation - Developer Role Support,Valid Azure OpenAI API credentials,"1. Send POST /text-generation with deployment_id=deepseek-v4-pro, stream=False, messages=[{'role':'developer','content':'hi'}].
+2. Verify response status code.
+3. Verify response model field.
+4. Verify response headers.","HTTP 200 OK
+- Response model field contains valid model identifier
+- Response headers are valid and not empty",High,Regression,compass_azure_openai|compass_deepseek_v4_pro|compass_text_generation|api_all
+OASCOM-TC-DSKV4PRO-AZ-005,Invalid Role Error - Unknown Role,Valid Azure OpenAI API credentials,"1. Send POST /text-generation with deployment_id=deepseek-v4-pro, stream=False, messages=[{'role':'ABC','content':'hi'}].
+2. Verify response status code.
+3. Verify error message contains 'Unknown role: ABC'.
+4. Verify response headers.","HTTP 501 Not Implemented
+- Response contains 'error' field
+- Error message contains 'Unknown role: ABC'
+- Response headers are valid and not empty",High,Regression,compass_azure_openai|compass_deepseek_v4_pro|compass_text_generation|api_all
+OASCOM-TC-DSKV4PRO-AZ-006,Invalid Model Error - Non-existent Deployment,Valid Azure OpenAI API credentials,"1. Send POST /text-generation with deployment_id=deepseek-v4-pro-invalid, stream=False, messages=[{'role':'user','content':'hi'}].
+2. Verify response status code.
+3. Verify error message contains 'invalid input model: [deepseek-v4-pro-invalid]'.
+4. Verify response headers.","HTTP 404 Not Found
+- Response contains 'error' field
+- Error message contains 'invalid input model: [deepseek-v4-pro-invalid]'
+- Response headers are valid and not empty",High,Regression,compass_azure_openai|compass_deepseek_v4_pro|compass_text_generation|api_all
+OASCOM-TC-DSKV4PRO-AZ-007,Invalid API Key Error,Valid Azure endpoint with invalid API key,"1. Send POST /text-generation with deployment_id=deepseek-v4-pro, api_key=0aa00bbcbf000e00b0000ef0000fe00, stream=False, messages=[{'role':'user','content':'I am a student'}].
+2. Verify response status code.
+3. Verify error message contains 'Invalid API Key.'.
+4. Verify response headers.","HTTP 400 Bad Request
+- Response contains 'error' field with 'message' key
+- Error message contains 'Invalid API Key.'
+- Response headers are valid and not empty",High,Regression,compass_azure_openai|compass_deepseek_v4_pro|compass_text_generation|api_all
+OASCOM-TC-DSKV4PRO-AZ-008,Missing API Key Error,Valid Azure endpoint with blank API key,"1. Send POST /text-generation with deployment_id=deepseek-v4-pro, api_key='', stream=False, messages=[{'role':'user','content':'I am a student'}].
+2. Verify response status code.
+3. Verify error message contains 'Missing header: [api-key] or [authorization]'.
+4. Verify response headers.","HTTP 400 Bad Request
+- Response contains 'error' field with 'message' key
+- Error message contains 'Missing header: [api-key] or [authorization]'
+- Response headers are valid and not empty",High,Regression,compass_azure_openai|compass_deepseek_v4_pro|compass_text_generation|api_all
+OASCOM-TC-DSKV4PRO-AZ-009,Function Calling - Tool Choice = none,Valid Azure OpenAI API credentials and function calling tools available,"1. Send POST /text-generation with deployment_id=deepseek-v4-pro, model=deepseek-v4-pro, stream=False, messages=function_calling_message, tools=function_calling_tools, tool_choice='none'.
+2. Verify response status code.
+3. Verify response model field.
+4. Verify response contains choices and usage fields.
+5. Verify response headers.","HTTP 200 OK
+- Response model field is 'deepseek-v4-pro'
+- Response contains 'choices' and 'usage' fields
+- Response headers are valid and not empty",High,Regression,compass_azure_openai|compass_deepseek_v4_pro|compass_text_generation|compass_functioncall|api_all
+OASCOM-TC-DSKV4PRO-AZ-010,Function Calling - Tool Choice = auto (disabled),Valid Azure OpenAI API credentials and function calling tools,"1. Send POST /text-generation with deployment_id=deepseek-v4-pro, tool_choice='auto'.
+2. Verify response status.","Commented out test - Tool choice 'auto' not currently enabled in staging",High,Regression,compass_azure_openai|compass_deepseek_v4_pro|compass_text_generation|compass_functioncall|api_all
+OASCOM-TC-DSKV4PRO-AZ-011,Function Calling - Tool Choice = required (disabled),Valid Azure OpenAI API credentials and function calling tools,"1. Send POST /text-generation with deployment_id=deepseek-v4-pro, tool_choice='required'.
+2. Verify response status.","Commented out test - Tool choice 'required' not currently enabled in staging",High,Regression,compass_azure_openai|compass_deepseek_v4_pro|compass_text_generation|compass_functioncall|api_all
+OASCOM-TC-DSKV4PRO-AZ-012,Invalid Tool Choice Value Error,Valid Azure OpenAI API credentials,"1. Send POST /text-generation with deployment_id=deepseek-v4-pro, stream=False, messages=[{'role':'user','content':'What is the weather like in San Francisco?'}], tool_choice='1233'.
+2. Verify response status code.
+3. Verify response contains error field.
+4. Verify response error message exists.
+5. Verify response headers.","HTTP 400 Bad Request
+- Response contains 'error' field
+- Response error message field is not empty
+- Response headers are valid and not empty",High,Regression,compass_azure_openai|compass_deepseek_v4_pro|compass_text_generation|compass_functioncall|api_all|staging
+OASCOM-TC-DSKV4PRO-AZ-013,Temperature Validation - Value 0,Valid Azure OpenAI API credentials,"1. Send POST /text-generation with deployment_id=deepseek-v4-pro, stream=False, messages=[{'role':'user','content':'hi'}], temperature=0, max_completion_tokens from constants.
+2. Verify response status code.
+3. Verify response structure contains choices and usage.
+4. Verify response headers.","HTTP 200 OK
+- Response contains 'choices' field with message content from assistant
+- Response contains 'usage' field with prompt_tokens, completion_tokens, total_tokens
+- Response headers are valid and not empty",Medium,Regression,compass_azure_openai|compass_deepseek_v4_pro|compass_text_generation|api_all
+OASCOM-TC-DSKV4PRO-AZ-014,Temperature Validation - Value 1,Valid Azure OpenAI API credentials,"1. Send POST /text-generation with deployment_id=deepseek-v4-pro, stream=False, messages=[{'role':'user','content':'hi'}], temperature=1, max_completion_tokens from constants.
+2. Verify response status code.
+3. Verify response structure contains choices and usage.
+4. Verify response headers.","HTTP 200 OK
+- Response contains 'choices' field with message content from assistant
+- Response contains 'usage' field with prompt_tokens, completion_tokens, total_tokens
+- Response headers are valid and not empty",Medium,Regression,compass_azure_openai|compass_deepseek_v4_pro|compass_text_generation|api_all
+OASCOM-TC-DSKV4PRO-AZ-015,Temperature Validation - Value 2,Valid Azure OpenAI API credentials,"1. Send POST /text-generation with deployment_id=deepseek-v4-pro, stream=False, messages=[{'role':'user','content':'hi'}], temperature=2, max_completion_tokens from constants.
+2. Verify response status code.
+3. Verify response structure contains choices and usage.
+4. Verify response headers.","HTTP 200 OK
+- Response contains 'choices' field with message content from assistant
+- Response contains 'usage' field with prompt_tokens, completion_tokens, total_tokens
+- Response headers are valid and not empty",Medium,Regression,compass_azure_openai|compass_deepseek_v4_pro|compass_text_generation|api_all
+OASCOM-TC-DSKV4PRO-AZ-016,Invalid Temperature Error - Below Minimum (-1),Valid Azure OpenAI API credentials,"1. Send POST /text-generation with deployment_id=deepseek-v4-pro, stream=False, messages=[{'role':'user','content':'hi'}], temperature=-1.
+2. Verify response status code is 400.
+3. Verify error message contains temperature boundary information.
+4. Verify response headers.","HTTP 400 Bad Request
+- Response contains 'error' field with 'message' key
+- Error message contains 'temperature must be non-negative, got -1.0. (parameter=temperature, value=-1.0)'
+- Response headers are valid and not empty",Medium,Regression,compass_azure_openai|compass_deepseek_v4_pro|compass_text_generation|api_all
+OASCOM-TC-DSKV4PRO-AZ-017,Invalid Temperature Error - Above Maximum (3),Valid Azure OpenAI API credentials,"1. Send POST /text-generation with deployment_id=deepseek-v4-pro, stream=False, messages=[{'role':'user','content':'hi'}], temperature=3.
+2. Verify response status code is 400.
+3. Verify error message contains temperature boundary information.
+4. Verify response headers.","HTTP 400 Bad Request
+- Response contains 'error' field with 'message' key
+- Error message contains temperature boundary information
+- Response headers are valid and not empty",Medium,Regression,compass_azure_openai|compass_deepseek_v4_pro|compass_text_generation|api_all
+OASCOM-TC-DSKV4PRO-AZ-018,Large Context Length Handling,Valid Azure OpenAI API credentials,"1. Send POST /text-generation with deployment_id=deepseek-v4-pro, stream=False, messages=[{'role':'user','content':'HI ' * 210000}] (large context).
+2. Verify response status code.
+3. Verify response model is 'deepseek-v4-pro'.
+4. Verify response contains choices with content.
+5. Verify prompt_tokens exceed 200000.
+6. Verify response headers.","HTTP 200 OK
+- Response model is 'deepseek-v4-pro'
+- Response contains 'choices' with non-empty content
+- Response 'usage' field exists with prompt_tokens > 200000
+- Response headers are valid and not empty",High,Regression,compass_azure_openai|compass_deepseek_v4_pro|compass_text_generation|api_all
+OASCOM-TC-DSKV4PRO-AZ-019,Top_P Validation - Maximum Value (1),Valid Azure OpenAI API credentials,"1. Send POST /text-generation with deployment_id=deepseek-v4-pro, stream=False, messages=[{'role':'user','content':'hi'}], top_p=1, max_completion_tokens from constants.
+2. Verify response status code.
+3. Verify response contains choices and usage fields.
+4. Verify response headers.","HTTP 200 OK
+- Response contains 'choices' field
+- Response contains 'usage' field
+- Response headers are valid and not empty",Medium,Regression,compass_azure_openai|compass_deepseek_v4_pro|compass_text_generation|api_all
+OASCOM-TC-DSKV4PRO-AZ-020,Invalid Top_P Error - Below Minimum (-1),Valid Azure OpenAI API credentials,"1. Send POST /text-generation with deployment_id=deepseek-v4-pro, stream=False, messages=[{'role':'user','content':'hi'}], top_p=-1, max_completion_tokens from constants.
+2. Verify response status code is 400.
+3. Verify error message contains 'top_p must be in (0, 1], got -1.0. (parameter=top_p, value=-1.0)'.
+4. Verify response headers.","HTTP 400 Bad Request
+- Response contains 'error' field with 'message' key
+- Error message contains 'top_p must be in (0, 1], got -1.0. (parameter=top_p, value=-1.0)'
+- Response headers are valid and not empty",Medium,Regression,compass_azure_openai|compass_deepseek_v4_pro|compass_text_generation|api_all
+OASCOM-TC-DSKV4PRO-AZ-021,Invalid Top_P Error - Above Maximum (2),Valid Azure OpenAI API credentials,"1. Send POST /text-generation with deployment_id=deepseek-v4-pro, stream=False, messages=[{'role':'user','content':'hi'}], top_p=2, max_completion_tokens from constants.
+2. Verify response status code is 400.
+3. Verify error message contains 'top_p must be in (0, 1], got 2.0. (parameter=top_p, value=2.0)'.
+4. Verify response headers.","HTTP 400 Bad Request
+- Response contains 'error' field with 'message' key
+- Error message contains 'top_p must be in (0, 1], got 2.0. (parameter=top_p, value=2.0)'
+- Response headers are valid and not empty",Medium,Regression,compass_azure_openai|compass_deepseek_v4_pro|compass_text_generation|api_all
+OASCOM-TC-DSKV4PRO-AZ-022,Top_P Validation - Out of Range (0),Valid Azure OpenAI API credentials,"1. Send POST /text-generation with deployment_id=deepseek-v4-pro, stream=False, messages=[{'role':'user','content':'hi'}], top_p=0.
+2. Verify error response status code 400.
+3. Verify error message contains boundary validation info.","HTTP 400 Bad Request
+- Response contains 'error' field with 'message' key
+- Error message indicates top_p boundary violation",Medium,Regression,compass_azure_openai|compass_deepseek_v4_pro|compass_text_generation|api_all
+OASCOM-TC-DSKV4PRO-AZ-023,Frequency_Penalty Validation - Minimum (-2),Valid Azure OpenAI API credentials,"1. Send POST /text-generation with deployment_id=deepseek-v4-pro, stream=False, messages=[{'role':'user','content':'hi'}], frequency_penalty=-2, max_completion_tokens from constants.
+2. Verify response status code.
+3. Verify response contains choices and usage fields.
+4. Verify response headers.","HTTP 200 OK
+- Response contains 'choices' field
+- Response contains 'usage' field
+- Response headers are valid and not empty",Medium,Regression,compass_azure_openai|compass_deepseek_v4_pro|compass_text_generation|api_all
+OASCOM-TC-DSKV4PRO-AZ-024,Frequency_Penalty Validation - Maximum (2),Valid Azure OpenAI API credentials,"1. Send POST /text-generation with deployment_id=deepseek-v4-pro, stream=False, messages=[{'role':'user','content':'hi'}], frequency_penalty=2, max_completion_tokens from constants.
+2. Verify response status code.
+3. Verify response contains choices and usage fields.
+4. Verify response headers.","HTTP 200 OK
+- Response contains 'choices' field
+- Response contains 'usage' field
+- Response headers are valid and not empty",Medium,Regression,compass_azure_openai|compass_deepseek_v4_pro|compass_text_generation|api_all
+OASCOM-TC-DSKV4PRO-AZ-025,Presence_Penalty Validation - Minimum (-2),Valid Azure OpenAI API credentials,"1. Send POST /text-generation with deployment_id=deepseek-v4-pro, stream=False, messages=[{'role':'user','content':'hi'}], presence_penalty=-2, max_completion_tokens from constants.
+2. Verify response status code.
+3. Verify response contains choices and usage fields.
+4. Verify response headers.","HTTP 200 OK
+- Response contains 'choices' field
+- Response contains 'usage' field
+- Response headers are valid and not empty",Medium,Regression,compass_azure_openai|compass_deepseek_v4_pro|compass_text_generation|api_all
+OASCOM-TC-DSKV4PRO-AZ-026,Presence_Penalty Validation - Maximum (2),Valid Azure OpenAI API credentials,"1. Send POST /text-generation with deployment_id=deepseek-v4-pro, stream=False, messages=[{'role':'user','content':'hi'}], presence_penalty=2, max_completion_tokens from constants.
+2. Verify response status code.
+3. Verify response contains choices and usage fields.
+4. Verify response headers.","HTTP 200 OK
+- Response contains 'choices' field
+- Response contains 'usage' field
+- Response headers are valid and not empty",Medium,Regression,compass_azure_openai|compass_deepseek_v4_pro|compass_text_generation|api_all
+OASCOM-TC-DSKV4PRO-AZ-027,Completion Tokens - Exact Match to Max Token Limit,Valid Azure OpenAI API credentials,"1. Send POST /text-generation with deployment_id=deepseek-v4-pro, stream=False, messages=[{'role':'user','content':'hi'}], max_completion_tokens=2.
+2. Verify response status code.
+3. Verify completion_tokens equals 2 exactly.
+4. Verify response headers.","HTTP 200 OK
+- Response 'usage.completion_tokens' equals 2
+- Response headers are valid and not empty",Medium,Regression,compass_azure_openai|compass_deepseek_v4_pro|compass_text_generation|api_all
+OASCOM-TC-DSKV4PRO-AZ-028,Response Format - JSON Schema Support,Valid Azure OpenAI API credentials,"1. Send POST /text-generation with deployment_id=deepseek-v4-pro, stream=False, response_format={'type':'json_schema','json_schema':{...city_info_schema...}}, messages=[{'role':'user','content':'Generate JSON about a city'}].
+2. Verify response status code.
+3. Verify response contains choices field.","HTTP 200 OK
+- Response contains 'choices' field with valid response
+- Response complies with specified JSON schema",Medium,Regression,compass_azure_openai|compass_deepseek_v4_pro|compass_text_generation|api_all
+OASCOM-TC-DSKV4PRO-AZ-029,Chinese Language Support - Stream False,Valid Azure OpenAI API credentials,"1. Send POST /text-generation with deployment_id=deepseek-v4-pro, stream=False, messages=[{'role':'user','content':'用中文介绍一下北京。'}].
+2. Verify response status code.
+3. Verify response contains choices with non-empty content.
+4. Verify response headers.","HTTP 200 OK
+- Response contains 'choices' field with non-empty content
+- Response content is in Chinese language
+- Response headers are valid and not empty",Medium,Regression,compass_azure_openai|compass_deepseek_v4_pro|compass_text_generation|api_all
+OASCOM-TC-DSKV4PRO-AZ-030,Chinese Language Support - Stream True,Valid Azure OpenAI API credentials,"1. Send POST /text-generation with deployment_id=deepseek-v4-pro, stream=True, messages=[{'role':'user','content':'用中文介绍一下北京。'}].
+2. Verify response status code.
+3. Verify streaming response is received.
+4. Verify response headers.","HTTP 200 OK
+- Streaming response received successfully
+- Content returned in valid format
+- Response headers are valid and not empty",Medium,Regression,compass_azure_openai|compass_deepseek_v4_pro|compass_text_generation|api_all
+OASCOM-TC-DSKV4PRO-AZ-031,Multi-Turn Chat History Support,Valid Azure OpenAI API credentials,"1. Send POST /text-generation with deployment_id=deepseek-v4-pro, stream=False, messages=[{'role':'user','content':'My favorite color is blue.'},{'role':'assistant','content':'You said your favorite color is blue.'},{'role':'user','content':'What color did I say I liked?'}].
+2. Verify response status code.
+3. Verify response contains choices with content referencing blue.
+4. Verify response headers.","HTTP 200 OK
+- Response contains 'choices' field
+- Response content includes 'blue' (case-insensitive)
+- Response headers are valid and not empty",High,Regression,compass_azure_openai|compass_deepseek_v4_pro|compass_text_generation|api_all
+OASCOM-TC-DSKV4PRO-AZ-032,Max Tokens Validation - Valid Value (100),Valid Azure OpenAI API credentials,"1. Send POST /text-generation with deployment_id=deepseek-v4-pro, stream=False, messages=[{'role':'user','content':'hi'}], max_tokens=100.
+2. Verify response status code.
+3. Verify response structure contains choices with non-empty content.
+4. Verify response headers.","HTTP 200 OK
+- Response contains 'choices' field with non-empty message content
+- Response headers are valid and not empty",Medium,Regression,compass_azure_openai|compass_deepseek_v4_pro|compass_text_generation|api_all
+OASCOM-TC-DSKV4PRO-AZ-033,Max Tokens Validation - Exceeds Model Limit (999999),Valid Azure OpenAI API credentials,"1. Send POST /text-generation with deployment_id=deepseek-v4-pro, stream=False, messages=[{'role':'user','content':'hi'}], max_tokens=999999.
+2. Verify response status code is 400.
+3. Verify error contains 'max_tokens=999999 cannot be greater than max_model_len'.
+4. Verify error type is 'BadRequestError', param is 'max_tokens', code is 400.
+5. Verify response headers.","HTTP 400 Bad Request
+- Response contains 'error' field with 'message' key
+- Error message contains 'max_tokens=999999 cannot be greater than max_model_len'
+- Error message contains 'Please request fewer output tokens'
+- Error 'type' is 'BadRequestError'
+- Error 'param' is 'max_tokens'
+- Error 'code' is 400
+- Response headers are valid and not empty",Medium,Regression,compass_azure_openai|compass_deepseek_v4_pro|compass_text_generation|api_all
